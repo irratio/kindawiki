@@ -57,3 +57,10 @@ RSpec.configure do |config|
 end
 
 RSpec::Matchers.define_negated_matcher :avoid_changing, :change
+
+Shoulda::Matchers.configure do |config|
+  config.integrate do |with|
+    with.test_framework :rspec
+    with.library :rails
+  end
+end

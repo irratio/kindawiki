@@ -24,7 +24,30 @@ class Page < ActiveRecord::Base
     find_by(parent_id: nil)
   end
 
+  def self.find_by_path(path)
+    slugs = path.to_s.split('/').unshift('')
 
+    sql = 'SELECT pl.* FROM pages pl '
+
+    slugs[0..-2].each_with_index do |slug, i|
+      sql << "JOIN pages p#{i} ON "
+      if i == 0
+        sql << "p#{i}.parent_id IS NULL "
+      else
+        sql << "p#{i}.slug = '#{slug}' AND p#{i}.parent_id = p#{i - 1}.id "
+      end
+    end
+
+    if slugs.length < 2
+      sql << 'WHERE pl.parent_id IS NULL;'
+    else
+      sql << "WHERE pl.slug = '#{slugs.last}' AND pl.parent_id = p#{slugs.length - 2}.id;"
+    end
+
+    self.find_by_sql(sql).first
+  end
+
+  
   def path
     if parent.present? && (parent_path = parent.path).present?
       "#{parent_path}/#{slug}"

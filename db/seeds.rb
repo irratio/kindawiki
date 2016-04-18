@@ -16,7 +16,7 @@ root_page = Page.create(
   )
 end
 
-page = Page.children.first
+page = root_page.children.first
 
 %w(first second third fourth).each do |n|
   Page.create(

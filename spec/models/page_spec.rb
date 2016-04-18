@@ -17,6 +17,31 @@ RSpec.describe Page, type: :model do
     it { is_expected.to validate_uniqueness_of(:slug).scoped_to(:parent_id) }
   end
 
+  describe '.find_root' do
+    context 'when there is no root page' do
+      it 'returns nil' do
+        expect(Page.find_root).to be_nil
+      end
+    end
+
+    context 'when root page exists' do
+      let!(:root_page) { Page.create!(title: 'Root page', text: 'Text') }
+      subject { Page.find_root }
+
+      it 'returned object should be Page' do
+        is_expected.to be_a Page
+      end
+
+      it 'returned object should be root page' do
+        is_expected.to be_root
+      end
+
+      it 'returned page title should match initial value' do
+        expect(subject.title).to eq('Root page')
+      end
+    end
+  end
+
   describe '#path' do
     context 'without parent' do
       it 'returns empty string' do

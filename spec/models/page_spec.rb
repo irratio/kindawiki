@@ -42,6 +42,51 @@ RSpec.describe Page, type: :model do
     end
   end
 
+  describe '.find_by_path' do
+    let!(:root_page) do
+      Page.create!(
+        title: 'Root page',
+        text: 'Text'
+      )
+    end
+    let!(:first_lvl_page) do
+      Page.create!(
+        title: 'First level page',
+        text: 'Text',
+        slug: 'first',
+        parent: root_page
+      )
+    end
+    let!(:second_lvl_page) do
+      Page.create!(
+        title: 'Second level page',
+        text: 'Text',
+        slug: 'second',
+        parent: first_lvl_page
+      )
+    end
+
+    it 'finds root page by empty path' do
+      expect(Page.find_by_path('')).to eq(root_page)
+    end
+
+    it 'finds first level page by its path' do
+      expect(Page.find_by_path('first')).to eq(first_lvl_page)
+    end
+
+    it 'find second level page by its path' do
+      expect(Page.find_by_path('first/second')).to eq(second_lvl_page)
+    end
+
+    it 'doesn’t find second level pages by their slugs' do
+      expect(Page.find_by_path('second')).to be_nil
+    end
+
+    it 'returns nil when path is not valid' do
+      expect(Page.find_by_path('one/two')).to be_nil
+    end
+  end
+
   describe '#path' do
     context 'without parent' do
       it 'returns empty string' do

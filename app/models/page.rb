@@ -20,6 +20,11 @@ class Page < ActiveRecord::Base
     message: 'can be omitted only on root page'
 
 
+  def self.find_root
+    find_by(parent_id: nil)
+  end
+
+
   def path
     if parent.present? && (parent_path = parent.path).present?
       "#{parent_path}/#{slug}"

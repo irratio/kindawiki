@@ -47,7 +47,7 @@ class Page < ActiveRecord::Base
     self.find_by_sql(sql).first
   end
 
-  
+
   def path
     if parent.present? && (parent_path = parent.path).present?
       "#{parent_path}/#{slug}"

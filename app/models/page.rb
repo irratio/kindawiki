@@ -1,6 +1,8 @@
 class Page < ActiveRecord::Base
   acts_as_tree order: 'slug'
 
+  before_destroy :check_children, prepend: true
+
   validates_presence_of :title
   validates_presence_of :text
   validates :slug,
@@ -58,5 +60,12 @@ class Page < ActiveRecord::Base
 
   def to_param
     path
+  end
+
+  def check_children
+    unless leaf?
+      errors[:base] << 'Page cannot be destroyed because it has children'
+      false
+    end
   end
 end

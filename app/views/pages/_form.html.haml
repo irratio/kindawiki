@@ -1,0 +1,50 @@
+= form_for @page, url: form_url, html: { class: 'form-horizontal' } do |f|
+  - if @page.errors.any?
+    .alert.alert-warning.alert-dismissible{role: 'alert'}
+      %button.close{:'aria-label' => 'Close', :'data-dismiss' => 'alert', :type => 'button'}
+        %span{:'aria-hidden' => 'true'} ×
+      #{pluralize(@page.errors.count, 'error')} prohibited this page from being saved:
+      %ul
+        - @page.errors.full_messages.each do |msg|
+          %li= msg
+
+  %fieldset
+    - unless @page.root?
+      .form-group
+        = f.label :parent_id, class: 'col-sm-2 control-label' do
+          Parent
+        .col-sm-10
+          = f.select(:parent_id,
+            options_from_collection_for_select(Page.all, :id, :title, @page.parent_id),
+            {}, class: 'form-control')
+
+      .form-group{title: 'You can use english letters, numbers and underscores'}
+        = f.label :slug, class: 'col-sm-2 control-label' do
+          Page slug
+        .col-sm-10
+          = f.text_field :slug, class: 'form-control', pattern: '[a-zA-Z0-9_]*'
+
+    .form-group
+      = f.label :title, class: 'col-sm-2 control-label' do
+        Page title
+      .col-sm-10
+        = f.text_field :title, class: 'form-control', required: true
+
+    .form-group
+      = f.label :text, class: 'col-sm-2 control-label' do
+        Page text
+      .col-sm-10
+        = f.text_area :text, class: 'form-control', rows: 10
+
+  %fieldset
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        = f.submit 'Save', class: 'btn btn-primary'
+        - if @page.persisted?
+          = link_to 'Back to page', page_url(@page), class: 'btn btn-default'
+          - unless @page.root?
+            - if @page.children.exists?
+              %span{title: 'Page has children and cannot be deleted'}
+                %a.btn.btn-danger.disabled Delete
+            - else
+              = link_to 'Delete', page_url(@page), data: {confirm: 'Are you sure?'}, method: :delete, class: 'btn btn-danger'

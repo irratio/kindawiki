@@ -1,0 +1,23 @@
+$body-bg: gray
+
+@import 'bootstrap-sprockets'
+@import 'bootstrap'
+
+$grid-gutter-half-width: $grid-gutter-width/2
+
+
+.white-block
+  background-color: #ffffff
+  @media (min-width: $screen-sm-min)
+    border-radius: $border-radius-base
+
+.tree
+  ul
+    padding-left: 20px
+  > ul
+    padding-left: 0
+  li
+    list-style-type: none
+
+.page-buttons
+  padding: $grid-gutter-half-width 0

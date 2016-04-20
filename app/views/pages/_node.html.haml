@@ -1,0 +1,7 @@
+%li
+  = link_to node.title, node
+  = link_to edit_page_path(node), title: 'Edit' do
+    %span.glyphicon.glyphicon-pencil
+  - if node.children.exists?
+    %ul
+      = render partial: 'node', collection: node.children

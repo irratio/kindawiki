@@ -1,0 +1,15 @@
+%h1!= @page.title
+
+.text
+  != @page.text
+
+- if @page.children.exists?
+  .tree
+    %h3 Subpages:
+    %ul
+      = render partial: 'node', collection: @page.children
+
+.page-buttons
+  = link_to 'Edit page', edit_page_path(@page), class: 'btn btn-default'
+  = link_to 'Add subpage', new_page_path(@page), class: 'btn btn-default'
+

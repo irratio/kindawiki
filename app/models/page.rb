@@ -50,6 +50,10 @@ class Page < ActiveRecord::Base
   end
 
 
+  def root?
+    !(parent || parent_id)
+  end
+
   def path
     if parent.present? && (parent_path = parent.path).present?
       "#{parent_path}/#{slug}"

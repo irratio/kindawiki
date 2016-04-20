@@ -129,5 +129,13 @@ RSpec.describe Page, type: :model do
         expect(subject.root?).to be false
       end
     end
+
+    context 'when parent_id is invalid' do
+      subject { Page.new(parent_id: 413) }
+
+      it 'returns false' do
+        expect(subject.root?).to be false
+      end
+    end
   end
 end

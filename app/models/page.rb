@@ -18,7 +18,7 @@ class Page < ActiveRecord::Base
       scope: :parent_id
     }
   validates_uniqueness_of :parent_id,
-    if: proc { |page| page.parent_id == nil },
+    if: :root?,
     message: 'can be omitted only on root page'
 
 

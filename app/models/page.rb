@@ -20,6 +20,8 @@ class Page < ActiveRecord::Base
   validates_uniqueness_of :parent_id,
     if: :root?,
     message: 'can be omitted only on root page'
+  validates_presence_of :parent,
+    unless: :root?
 
 
   def self.find_root

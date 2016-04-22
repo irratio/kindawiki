@@ -14,8 +14,13 @@
         = f.label :parent_id, class: 'col-sm-2 control-label' do
           Parent
         .col-sm-10
+          :ruby
+            family_tree = []
+            nbsp = "\u00a0"
+            statement = @page.id ? ['id != ?', @page.id] : nil
+            Page.walk_tree(where: statement){ |p, i| family_tree << ["#{nbsp * 2 * i}#{p.title_with_path}", p.id] }
           = f.select(:parent_id,
-            options_from_collection_for_select(Page.all, :id, :title, @page.parent_id),
+            options_for_select(family_tree, selected: @page.parent_id, disabled: @page.id),
             {}, class: 'form-control')
 
       .form-group{title: 'You can use english letters, numbers and underscores'}

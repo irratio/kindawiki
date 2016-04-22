@@ -1,4 +1,5 @@
 class Page < ActiveRecord::Base
+  extend ActsAsTree::TreeWalker
   acts_as_tree order: 'slug'
 
   before_validation :generate_slug
@@ -67,6 +68,14 @@ class Page < ActiveRecord::Base
 
   def text_html
     KindamarkupHtml.to_html(text)
+  end
+
+  def title_with_path
+    if path.present?
+      "#{title} (#{path})"
+    else
+      title
+    end
   end
 
   def to_param

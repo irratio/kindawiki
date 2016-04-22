@@ -1,0 +1,58 @@
+grammar Kindamarkup
+  rule document
+    (paragraph / paragraph_break)*
+  end
+
+  rule paragraph
+    (!paragraph_break content)+ #<Paragraph>
+    {
+      def to_html
+        "<p>#{super}</p>"
+      end
+    }
+  end
+
+  rule paragraph_break
+    ([ \t\f\r]* [\n] [ \t\f]*) 2..
+    {
+      def to_html
+        "\n"
+      end
+    }
+  end
+
+  rule content
+    (tag / .)
+  end
+
+  rule tag
+    (bold / italic / link)
+  end
+
+  rule bold
+    '**' (!'**' content !paragraph_break)* '**'
+    {
+      def to_html
+        "<b>#{elements[1].to_html}</b>"
+      end
+    }
+  end
+
+  rule italic
+    '\\\\' (!'\\' content !paragraph_break)* '\\\\'
+    {
+      def to_html
+        "<i>#{elements[1].to_html}</i>"
+      end
+    }
+  end
+
+  rule link
+    '((' [a-zA-Z0-9_/]+ ' ' (!'))' content)* '))'
+    {
+      def to_html
+        "<a href=\"/#{elements[1].to_html}\">#{self.elements[3].to_html}</a>"
+      end
+    }
+  end
+end

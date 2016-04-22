@@ -184,4 +184,36 @@ RSpec.describe Page, type: :model do
       end
     end
   end
+
+  describe '#text_html' do
+    it 'converts **bold text** to <b>bold text</b>' do
+      subject.text = 'Hello! **text**'
+      expect(subject.text_html).to eq('<p>Hello! <b>text</b></p>')
+    end
+
+    it 'converts \\\\italic text\\\\ to <i>italic text</i>' do
+      subject.text = 'Hello! \\\\text\\\\'
+      expect(subject.text_html).to eq('<p>Hello! <i>text</i></p>')
+    end
+
+    it 'encases double-eol-divided slices of text in <p>…</p>' do
+      subject.text = "Hello!\n\nHow do you do?"
+      expect(subject.text_html).to eq("<p>Hello!</p>\n<p>How do you do?</p>")
+    end
+
+    it 'allows tags nesting' do
+      subject.text = 'Hello! **bold \\\\and italic\\\\ text**'
+      expect(subject.text_html).to eq('<p>Hello! <b>bold <i>and italic</i> text</b></p>')
+    end
+
+    it 'disallows tags interweaving' do
+      subject.text = 'Hello! **bold \\\\or** italic\\\\ text'
+      expect(subject.text_html).to_not eq('<p>Hello! <b>bold <i>or</b> italic</i> text</b></p>')
+    end
+
+    it 'converts ((link anchor text)) to active hyperlinks' do
+      subject.text = 'Please click ((page/subpage this long link))'
+      expect(subject.text_html).to eq('<p>Please click <a href="/page/subpage">this long link</a></p>')
+    end
+  end
 end

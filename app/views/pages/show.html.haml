@@ -8,7 +8,7 @@
 %h1!= @page.title
 
 .text
-  != @page.text
+  != @page.text_html
 
 - if @page.children.exists?
   .tree

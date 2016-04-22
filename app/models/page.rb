@@ -65,6 +65,10 @@ class Page < ActiveRecord::Base
     end
   end
 
+  def text_html
+    KindamarkupHtml.to_html(text)
+  end
+
   def to_param
     path
   end

@@ -216,4 +216,17 @@ RSpec.describe Page, type: :model do
       expect(subject.text_html).to eq('<p>Please click <a href="/page/subpage">this long link</a></p>')
     end
   end
+
+  describe '#title_with_path' do
+    let(:root_page) { Page.new(title: 'Root page', text: 'Text') }
+    subject { Page.new(parent: root_page, title: 'Another page', text: 'Page text', slug: 'slug') }
+
+    it 'returns only title when path is empty' do
+      expect(root_page.title_with_path).to eq(root_page.title)
+    end
+
+    it 'returns string with title and path' do
+      expect(subject.title_with_path).to eq('Another page (slug)')
+    end
+  end
 end

@@ -8,6 +8,8 @@ gem 'jquery-rails'
 gem 'bootstrap-sass'
 gem 'haml-rails'
 gem 'acts_as_tree'
+gem 'polyglot'
+gem 'treetop'
 
 group :development, :test do
   gem 'rspec-rails', '~> 3.4'

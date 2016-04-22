@@ -1,6 +1,7 @@
 class Page < ActiveRecord::Base
   acts_as_tree order: 'slug'
 
+  before_validation :generate_slug
   before_destroy :check_children, prepend: true
 
   validates_presence_of :title
@@ -72,6 +73,26 @@ class Page < ActiveRecord::Base
     unless leaf?
       errors[:base] << 'Page cannot be destroyed because it has children'
       false
+    end
+  end
+
+  def generate_slug
+    if slug.blank? && !root? && title.present?
+      I18n.with_locale(:ru) do
+        self.slug = title.to_s.parameterize('_')
+      end
+
+      if (taken_slugs = Page.where('parent_id = ? AND slug LIKE ?', parent_id, "#{slug}%").pluck(:slug)).present?
+        i = 1
+        possible_slug = slug
+
+        while taken_slugs.include? possible_slug do
+          i += 1
+          possible_slug = "#{slug}_#{i}"
+        end
+
+        self.slug = possible_slug
+      end
     end
   end
 end
